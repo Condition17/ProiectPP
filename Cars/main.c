@@ -40,7 +40,7 @@ void turn_player(struct player *player,struct pista *pista, char simbol){
     afisare_player( player );
     viteza_player( player );
  //   printf("\nviteza curenta:%d",player -> viteza);
-
+    printf("iesire: %d",iesire);
     if(!restart && !iesire){
     miscare = deplasare(player -> viteza);
     player -> suma += miscare;
@@ -190,7 +190,8 @@ void begin(){
 
 while((player1.laps<=3 || player2.laps<=3) && restart==0 && iesire==0){
        if(player1.laps<=3) turn_player(&player1,&pista1,'@');
-        if(player2.laps<=3) turn_player(&player2,&pista2,'#');
+       //daca intri in joc si dai iesire fara conditiile restart==0 si iesire==0 o sa treaca la player2 si mai apoi o sa iasa
+        if(player2.laps<=3 && restart==0 && iesire==0) turn_player(&player2,&pista2,'#');
 
 }
 
