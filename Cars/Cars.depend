@@ -1,9 +1,9 @@
 # depslib dependency file v1.0
-1450864257 source:c:\users\stefan\desktop\cars\cars\main.c
+1450870702 source:c:\users\stefan\desktop\cars\cars\main.c
 	<stdio.h>
 	<stdlib.h>
 
-1450785801 source:f:\fmi\programare procedurala-laborator\proiectpp\cars\main.c
+1450787035 source:f:\fmi\programare procedurala-laborator\proiectpp\cars\main.c
 	<stdio.h>
 	<stdlib.h>
 

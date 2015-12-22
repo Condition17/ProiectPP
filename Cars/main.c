@@ -135,6 +135,14 @@ pista1[30].obstacol=254;
 pista2[30].obstacol=254;
 pista1[80].obstacol=254;
 pista2[80].obstacol=254;
+pista1[10].damage=30;
+pista2[10].damage=30;
+pista1[60].damage=30;
+pista2[60].damage=30;
+pista1[30].damage=20;
+pista2[30].damage=20;
+pista1[80].damage=20;
+pista2[80].damage=20;
 }
 
 
@@ -205,13 +213,71 @@ void limite_viteza(){int decizie;
 printf("\nComanda nu se poate realiza, va rugam sa reintroduceti optiunea dorita\n");
 scanf("%d",&decizie);
 modificare_viteza(decizie);}
+int deplasare(int viteza){
+switch(viteza){
+case 1 :
+    return 1;
+case 2 :
+    return rand()%3+1;
+case 3 :
+    return rand()%4+2;
+case 4 :
+    return rand()%5+3;
+case 5 :
+    return rand()%7 +4;
+    }
+}
+int damage_obstacole(int inaintare,int pozitie,int viteza){
+int damage=0; int i;
+for(i=pozitie+1;i<=pozitie+inaintare;i++)
+if(i!=39&&i!=40&&i!=41&&i!=49&&i!=50&&i!=51&&i!=88&&i!=89&&i!=90&&i!=100&&i!=1&&i!=2)
+    switch(viteza){
+    case 1 :
+        damage+= 0;
+        break;
+    case 2 :
+        damage+= pista1[i%101].damage;
+        break;
+    case 3 :
+        damage+=pista1[i%101].damage*1,5;
+        break;
+    case 4 :
+        damage+=pista1[i%101].damage*2;
+        break;
+    case 5 :
+        damage+=pista1[i%101].damage*2,5;
+        break;
+                  }
+  else
+     if(i!=39&&i!=40&&i!=41&&i!=88&&i!=89&&i!=90)
+           {if(viteza>3)damage+=10;}
+
+         else if(viteza>4)damage+=10;
+
+           return damage;}
+void pozitionare(int initial){pista1[initial].afisare=0;
+                   pista1[player1.pozitie].afisare='@';}
 
 int main(){
+
+    int miscare,initial;
 initializare_obstacole();
-intro();
+player1.suma=1;
+player1.hp=100;
+strcpy(player1.nume,"Stefan");
+player1.pozitie=1;
+while(1){
+
+    initial=player1.pozitie;
+pista1[player1.pozitie].afisare='@';
 
 afisare_player1();
 viteza_player1();
-
+miscare=deplasare(player1.viteza);
+player1.suma+=miscare;
+player1.hp-=damage_obstacole(miscare,player1.pozitie,player1.viteza);
+player1.pozitie=player1.suma%100+1;
+pozitionare(initial);
+}
     return 0;
 }
