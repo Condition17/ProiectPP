@@ -14,9 +14,57 @@ int laps;
 int pozitie;
 int viteza;
 int hp;
-char nume[100]}player1,player2;
+char nume[100]
+}player1,player2;
 
 int restart,iesire=0,castigator=0;
+
+void hall_of_fame(){
+    //Afiseaza cei mai buni 5 jucatori care au jucat jocul in functie de numarul de miscari pe care l-au avut
+
+    struct player jucator[5];
+    struct player temp,test;
+    int i,j,ocupat=0; //cate elemente sunt in vectorul de jucatori la un anumit pas
+
+    FILE *f;
+    f=fopen("jucatori.in","r");
+    while(1){
+
+        fscanf(f,"%s %d",test.nume,&test.nr_pasi);
+        if(feof(f)) break;
+        else{
+
+            //printf("\n");spacing(20);printf("%s %d",test.nume,test.nr_pasi);
+            j=ocupat;
+
+            while(j >= 1 && test.nr_pasi > jucator[j-1].nr_pasi){
+                jucator[j] = jucator[j-1];
+                j--;
+            }
+
+        if(ocupat<4){
+            jucator[j] = test;
+            ocupat++;}
+        else
+            if (jucator[ocupat].nr_pasi < test.nr_pasi ) jucator[j] = test;
+
+        }
+
+}
+
+        printf("\n");
+
+         if(ocupat<4) ocupat--;
+    for(i=0;i<=ocupat;i++){
+       spacing(20);printf("%d. %s %d\n",i+1,jucator[i].nume,jucator[i].nr_pasi);
+
+        }
+
+
+    fclose(f);
+    }
+
+
 void afisare_player(struct player *player){
     afisare_pista();
 
@@ -125,9 +173,10 @@ void intro(){
 
                 }
             case 2:{
-                printf("In curs de constructie");
+                hall_of_fame();
                 break;
             }
+
             default: if(optiune!=3) printf("\nOptiune invalida");
         }
     } while(optiune!=3 );
