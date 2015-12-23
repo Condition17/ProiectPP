@@ -8,6 +8,7 @@ char afisare;
 }pista1[101],pista2[101];
 
 struct player{
+int nr_pasi;
 int suma;
 int laps;
 int pozitie;
@@ -40,8 +41,9 @@ void turn_player(struct player *player,struct pista *pista, char simbol){
     afisare_player( player );
     viteza_player( player );
  //   printf("\nviteza curenta:%d",player -> viteza);
-    printf("iesire: %d",iesire);
+
     if(!restart && !iesire){
+    player -> nr_pasi++;
     miscare = deplasare(player -> viteza);
     player -> suma += miscare;
 
@@ -82,6 +84,12 @@ void afisare_castigator(struct player *player){
     printf("\n");
     spacing(20);
       printf("%s a castigat aceasta cursa",player -> nume);
+
+    FILE *f;
+
+    f = fopen("jucatori.in","a");
+    fprintf(f,"%s %d\n",player->nume,player->nr_pasi);
+    fclose(f);
 }
 
 void spacing(int k){
@@ -204,7 +212,8 @@ while((player1.laps<=3 || player2.laps<=3) && restart==0 && iesire==0){
     else if(iesire) ;
     else {
 
-        if(castigator == 1) afisare_castigator(&player1);
+        if(castigator == 1)
+            afisare_castigator(&player1);
         else afisare_castigator(&player2);
 
          } //asta poate lipsi
@@ -216,6 +225,7 @@ void initializare_playeri(){
 
     //pozitiile de plecarea ale playerilor
     //+hp,+others
+player2.nr_pasi=player1.nr_pasi=0;
 player1.viteza=0;
 player1.laps=1;
 player1.pozitie=1;
