@@ -17,8 +17,49 @@ int hp;
 char nume[100]
 }player1,player2;
 
-int restart,iesire=0,castigator=0;
+int restart=0,iesire=0,castigator=0;
+void sfarsit_joc(){
+    //meniul de la sfrasitul cursei
 
+    char optiune;
+    do{
+    FILE *f;
+    f=fopen("sfarsit.in","r");
+    char line[1000];
+    while(1){
+        fgets(line,1000,f);
+        if(!feof(f)) printf("%s",line);
+        else break;
+    }
+    fclose(f);
+    printf("\n");
+    spacing(20);
+    printf("Optiunea ta: ");scanf("%hhi",&optiune);
+
+        switch(optiune){
+            case 1:
+                restart=1;
+                printf("\n");
+                spacing(20);
+                printf("Jocul s-a restartat\n");
+                begin();
+                break;
+            case 2:
+                printf("In curs de constructie....");
+                break;
+
+            case 3:
+                break;
+
+            default:{
+                printf("\n");
+            spacing(20);
+             printf("Optiune invalida\n");
+            }
+        }
+    } while(optiune!=1 && optiune!=2 && optiune!=3);
+
+}
 void hall_of_fame(){
     //Afiseaza cei mai buni 5 jucatori care au jucat jocul in functie de numarul de miscari pe care l-au avut
 
@@ -113,7 +154,7 @@ void turn_player(struct player *player,struct pista *pista, char simbol){
         if(player -> hp + 20 >=100) player -> hp = 100;
         else player -> hp += 20;
 
-        if(player -> laps == 3 && !castigator)
+        if(player -> laps == 1 && !castigator)
             if(simbol=='@') castigator=1;
             else castigator=2;
 
@@ -187,7 +228,7 @@ void pauza_joc(struct player *player){
     //acesta poate fi accesat de jucator in timpul jocului
 
     char optiune;
-
+    do{
     FILE *f;
     f=fopen("pauza.in","r");
     char line[1000];
@@ -197,8 +238,11 @@ void pauza_joc(struct player *player){
         else break;
     }
     fclose(f);
+
     spacing(20);
     printf("Optiunea ta: ");scanf("%hhi",&optiune);
+    printf("\n");
+
         switch(optiune){
             case 1:
                 afisare_player( player );
@@ -212,26 +256,33 @@ void pauza_joc(struct player *player){
                 iesire=1;
                 break;
             }
-            default: printf("\nOptiune invalida");
+            default:{
+                 spacing(20);
+                 printf("Optiune invalida\n");
+            }
         }
+
+        } while (optiune!=1 && optiune!=2 && optiune!=3);
 }
 
 
 
 void start_joc(){
-    char nume[100];
+    char nume1[100];
+    char nume2[100];
 
     printf("\nPlayer 1\n");
     do{
-    printf("Nume:");scanf("%s",nume);}
-    while(nume=="");
-    strcpy(player1.nume,nume);
+    printf("Nume:");scanf("%s",nume1);}
+    while(nume1=="");
+    strcpy(player1.nume,nume1);
 
-    printf("\nPlayer 2\n");
+
     do{
-    printf("Nume:");scanf("%s",nume);}
-    while(nume=="");
-    strcpy(player2.nume,nume);
+    printf("\nPlayer 2\n");
+    printf("Nume:");scanf("%s",nume2);}
+    while(nume2=="" || strcmp(nume1,nume2)==0);
+    strcpy(player2.nume,nume2);
 
     castigator=0;
     begin();
@@ -243,28 +294,30 @@ void begin(){
         initializare_playeri();
         initializare_obstacole();
         initializare_piste();
+        castigator=0;
         }
 
-while((player1.laps<=3 || player2.laps<=3) && restart==0 && iesire==0){
-       if(player1.laps<=3) turn_player(&player1,&pista1,'@');
-       //daca intri in joc si dai iesire fara conditiile restart==0 si iesire==0 o sa treaca la player2 si mai apoi o sa iasa
-        if(player2.laps<=3 && restart==0 && iesire==0) turn_player(&player2,&pista2,'#');
+while((player1.laps<=0 || player2.laps<=0) && restart==0 && iesire==0){
+       if(player1.laps<=0) turn_player(&player1,&pista1,'@');
+       //daca intri in joc si dai iesire/restart fara conditiile restart==0 si iesire==0 o sa treaca la player2 si mai apoi o sa iasa
+        if(player2.laps<=1 && restart==0 && iesire==0) turn_player(&player2,&pista2,'#');
 
 }
 
-    if(restart) {
+    if(restart) { //daca se da restart in timpul desfasurarii jocului
         printf("\n");
         spacing(20);
         printf("Jocul s-a restartat\n");
         begin();}
 
-    else if(iesire) ;
+    else if(iesire) ; //iesire in timpul desfasurarii jocului
     else {
 
         if(castigator == 1)
             afisare_castigator(&player1);
         else afisare_castigator(&player2);
 
+        sfarsit_joc(); //meniul de la finalul fiecarei partide
          } //asta poate lipsi
 }
 
