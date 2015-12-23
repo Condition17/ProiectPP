@@ -154,7 +154,7 @@ void turn_player(struct player *player,struct pista *pista, char simbol){
         if(player -> hp + 20 >=100) player -> hp = 100;
         else player -> hp += 20;
 
-        if(player -> laps == 1 && !castigator)
+        if(player -> laps == 4 && !castigator)
             if(simbol=='@') castigator=1;
             else castigator=2;
 
@@ -297,10 +297,10 @@ void begin(){
         castigator=0;
         }
 
-while((player1.laps<=0 || player2.laps<=0) && restart==0 && iesire==0){
-       if(player1.laps<=0) turn_player(&player1,&pista1,'@');
+while((player1.laps<=3 || player2.laps<=3) && restart==0 && iesire==0){
+       if(player1.laps<=3) turn_player(&player1,&pista1,'@');
        //daca intri in joc si dai iesire/restart fara conditiile restart==0 si iesire==0 o sa treaca la player2 si mai apoi o sa iasa
-        if(player2.laps<=1 && restart==0 && iesire==0) turn_player(&player2,&pista2,'#');
+        if(player2.laps<=3 && restart==0 && iesire==0) turn_player(&player2,&pista2,'#');
 
 }
 
