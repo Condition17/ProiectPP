@@ -143,7 +143,12 @@ pista1[30].damage=20;
 pista2[30].damage=20;
 pista1[80].damage=20;
 pista2[80].damage=20;
-}
+player1.suma=1;
+player1.hp=100;
+player1.pozitie=1;
+player2.suma=1;
+player2.hp=100;
+player2.pozitie=1;}
 
 
 void afisare_player1(){
@@ -258,18 +263,11 @@ if(i!=39&&i!=40&&i!=41&&i!=49&&i!=50&&i!=51&&i!=88&&i!=89&&i!=90&&i!=100&&i!=1&&
            return damage;}
 void pozitionare(int initial){pista1[initial].afisare=0;
                    pista1[player1.pozitie].afisare='@';}
+void pozitionare2(int initial){pista2[initial].afisare=0;
+                   pista2[player2.pozitie].afisare='#';}
 
-
-
-
-int main(){int initial,miscare;
-initializare_obstacole();
-intro();
-player1.suma=1;
-player1.hp=100;
-strcpy(player1.nume,"Stefan");
-player1.pozitie=1;
-while(1){initial=player1.pozitie;
+void turn_player1(){int initial,miscare;
+    initial=player1.pozitie;
 pista1[player1.pozitie].afisare='@';
 
 afisare_player1();
@@ -280,5 +278,25 @@ player1.hp-=damage_obstacole(miscare,player1.pozitie,player1.viteza);
 player1.pozitie=player1.suma%100+1;
 pozitionare(initial);
 }
+void turn_player2(){int initial,miscare;
+    initial=player2.pozitie;
+pista2[player2.pozitie].afisare='@';
+
+afisare_player2();
+viteza_player2();
+miscare=deplasare(player2.viteza);
+player2.suma+=miscare;
+player2.hp-=damage_obstacole(miscare,player2.pozitie,player2.viteza);
+player2.pozitie=player2.suma%100+1;
+pozitionare2(initial);
+}
+
+
+int main(){int initial,miscare;
+initializare_obstacole();
+//intro();
+
+
+
     return 0;
 }
