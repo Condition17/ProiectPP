@@ -14,14 +14,25 @@ int laps;
 int pozitie;
 int viteza;
 int hp;
-char nume[100]
+int vieti_pierdute;
+int scazut_obstacole;
+int obstacole_succes;
+int suma_spatii_parcurse;
+char nume[100];
+int trepte[5];
+
 }player1,player2;
 
 int restart=0,iesire=0,castigator=0;
+void initializare_trepte(struct player *player){
+    int i;
+    for(i=1;i<=5;i++)
+        player -> trepte[i]=0;
+}
 void sfarsit_joc(){
     //meniul de la sfrasitul cursei
 
-    char optiune;
+   char optiune[100];
     do{
     FILE *f;
     f=fopen("sfarsit.in","r");
@@ -34,21 +45,21 @@ void sfarsit_joc(){
     fclose(f);
     printf("\n");
     spacing(20);
-    printf("Optiunea ta: ");scanf("%hhi",&optiune);
-
-        switch(optiune){
-            case 1:
+    printf("Optiunea ta: ");scanf("%s",optiune);
+    if(strlen(optiune)==1){
+        switch(optiune[0]){
+            case '1':
                 restart=1;
                 printf("\n");
                 spacing(20);
                 printf("Jocul s-a restartat\n");
                 begin();
                 break;
-            case 2:
+            case '2':
                 printf("In curs de constructie....");
                 break;
 
-            case 3:
+            case '3':
                 break;
 
             default:{
@@ -57,7 +68,8 @@ void sfarsit_joc(){
              printf("Optiune invalida\n");
             }
         }
-    } while(optiune!=1 && optiune!=2 && optiune!=3);
+    }else printf("Optiune invalida\n");
+    } while(optiune[0]!='1' && optiune[0]!='2' && optiune[0]!='3');
 
 }
 void hall_of_fame(){
@@ -111,9 +123,12 @@ void afisare_player(struct player *player){
 
 spacing(20);printf("--------- %s ----------\n\n",player -> nume);
 
-spacing(20);printf("Lap: %d/3\n",player -> laps);
+spacing(20);printf("Lap: %d/2\n",player -> laps);
 spacing(20);printf("Te afli pe pozitia %d la %d pozitii de urmatorul obstacol\n",player -> pozitie,distanta_obstacol(player -> pozitie));
-spacing(20);printf("Pana la urmatoarea curba mai sunt %d pozitii",distanta_curba(player -> pozitie));
+spacing(20);
+if(distanta_curba(player->pozitie)>0)
+        printf("Pana la urmatoarea curba mai sunt %d pozitii",distanta_curba(player -> pozitie));
+    else printf("Esti in curba");
 printf("\n");spacing(20);printf("Mai ai %d puncte de  viata",player -> hp);
 
 
@@ -134,13 +149,24 @@ void turn_player(struct player *player,struct pista *pista, char simbol){
     if(!restart && !iesire){
     player -> nr_pasi++;
     miscare = deplasare(player -> viteza);
+
+    player -> trepte[ player -> viteza]++;
+
+    player -> suma_spatii_parcurse += miscare; //verifica daca nu cumva se poate si fara!!!
+
+    //e posibil ca player -> suma_spatii_parcurse == player -> suma
+
     player -> suma += miscare;
 
     player -> hp -= damage_obstacole(pista,miscare,player -> pozitie,player -> viteza);
 
+    player -> scazut_obstacole += damage_obstacole(pista,miscare,player -> pozitie,player -> viteza);
+    if (damage_obstacole(pista,miscare,player -> pozitie,player -> viteza) == 0) player -> obstacole_succes++;
+
     if(player -> hp<=0) {
             player ->hp = 100;
             printf("\n");spacing(20);printf("Masina s-a stricat. Drept urmare, aceasta a fost reparata si pozitionata cu %d pozitii inapoi\n",2*miscare);
+            player -> vieti_pierdute++;
             if(player -> suma - 2*miscare>=0) player -> suma -= 2*miscare;
             else player -> suma=0;
             player->viteza=0;
@@ -190,7 +216,7 @@ void spacing(int k){
 void intro(){
     //meniul de intrare in program
 
-    char optiune;
+    char optiune[100];
 
     do{
 
@@ -205,29 +231,38 @@ void intro(){
     }
     fclose(f);
     spacing(20);
-    printf("Optiunea ta: ");scanf("%hhi",&optiune);
+    printf("Optiunea ta: ");scanf("%s",optiune);
     spacing(20);
-        switch(optiune){
-            case 1:{
+    if(strlen(optiune)==1){
+
+        switch(optiune[0]){
+            case '1':{
                 start_joc();
                 break;
 
                 }
-            case 2:{
+            case '2':{
                 hall_of_fame();
                 break;
             }
 
-            default: if(optiune!=3) printf("\nOptiune invalida");
+            default: if(optiune[0]!='3') printf("Optiune invalida\n");
         }
-    } while(optiune!=3 );
+
+        } else printf("Optiune invalida\n");
+
+
+        } while(optiune[0]!='3' );
+
+
+
 }
 
 void pauza_joc(struct player *player){
     //meniul de pauza din joc
     //acesta poate fi accesat de jucator in timpul jocului
 
-    char optiune;
+    char optiune[100];
     do{
     FILE *f;
     f=fopen("pauza.in","r");
@@ -240,19 +275,20 @@ void pauza_joc(struct player *player){
     fclose(f);
 
     spacing(20);
-    printf("Optiunea ta: ");scanf("%hhi",&optiune);
+    printf("Optiunea ta: ");scanf("%s",optiune);
     printf("\n");
-
-        switch(optiune){
-            case 1:
+    spacing(20);
+        if(strlen(optiune)==1){
+        switch(optiune[0]){
+            case '1':
                 afisare_player( player );
                 viteza_player(player);
                 break;
-            case 2:{
+            case '2':{
                 restart=1;
                 break;
             }
-            case 3:{
+            case '3':{
                 iesire=1;
                 break;
             }
@@ -261,8 +297,8 @@ void pauza_joc(struct player *player){
                  printf("Optiune invalida\n");
             }
         }
-
-        } while (optiune!=1 && optiune!=2 && optiune!=3);
+        } else printf("Optiune invalida\n");
+        } while (optiune[0]!='1' && optiune[0]!='2' && optiune[0]!='3');
 }
 
 
@@ -289,6 +325,7 @@ void start_joc(){
 }
 
 void begin(){
+
     restart=0;
     if (restart==0) {
         initializare_playeri();
@@ -297,10 +334,10 @@ void begin(){
         castigator=0;
         }
 
-while((player1.laps<=3 || player2.laps<=3) && restart==0 && iesire==0){
+while((player1.laps<=0 || player2.laps<=0) && restart==0 && iesire==0){
        if(player1.laps<=3) turn_player(&player1,&pista1,'@');
        //daca intri in joc si dai iesire/restart fara conditiile restart==0 si iesire==0 o sa treaca la player2 si mai apoi o sa iasa
-        if(player2.laps<=3 && restart==0 && iesire==0) turn_player(&player2,&pista2,'#');
+        if(player2.laps<=2 && restart==0 && iesire==0) turn_player(&player2,&pista2,'#');
 
 }
 
@@ -316,7 +353,6 @@ while((player1.laps<=3 || player2.laps<=3) && restart==0 && iesire==0){
         if(castigator == 1)
             afisare_castigator(&player1);
         else afisare_castigator(&player2);
-
         sfarsit_joc(); //meniul de la finalul fiecarei partide
          } //asta poate lipsi
 }
@@ -333,17 +369,23 @@ player1.laps=1;
 player1.pozitie=1;
 player1.suma=1;
 player1.hp=100;
+player1.vieti_pierdute=0;
+player1.scazut_obstacole=0;
 pista1[player1.pozitie].afisare='@';
+player1.obstacole_succes=0;
+player1.suma_spatii_parcurse=0;
+initializare_trepte(&player1);
 
 player2.viteza=0;
 player2.laps=1;
 player2.pozitie=1;
 player2.suma=1;
 player2.hp=100;
-
+player2.vieti_pierdute;
 pista2[player2.pozitie].afisare='#';
-
-
+player2.obstacole_succes=0;
+player2.suma_spatii_parcurse=0;
+initializare_trepte(&player2);
 }
 
 
@@ -403,14 +445,15 @@ pista1[30].obstacol=254;
 pista2[30].obstacol=254;
 pista1[80].obstacol=254;
 pista2[80].obstacol=254;
-pista1[10].damage=30;
-pista2[10].damage=30;
-pista1[60].damage=30;
-pista2[60].damage=30;
+pista1[10].damage=20;
+pista2[10].damage=20;
+pista1[60].damage=20;
+pista2[60].damage=20;
 pista1[30].damage=20;
-pista2[30].damage=20;
-pista1[80].damage=20;
-pista2[80].damage=20;
+pista2[30].damage=10;
+pista1[80].damage=10;
+pista2[80].damage=10;
+
 }
 
 void initializare_piste(){
@@ -440,7 +483,8 @@ int distanta_obstacol(int pozitie){
         }
 
 
-int distanta_curba(int pozitie){
+int distanta_curba(int pozitie){int i=pozitie;
+    if(i==39||i==40||i==41||i==49||i==50||i==51||i==88||i==89||i==90||i==100||i==1||i==2)return -1;
     if(pozitie<39)return 39-pozitie;
     if(pozitie<49)return 49-pozitie;
     if(pozitie<88)return 88-pozitie;
@@ -502,6 +546,7 @@ void limite_viteza(struct player *player){
     printf("\n");
     spacing(20);
     printf("Comanda nu se poate realiza, va rugam sa reintroduceti optiunea dorita\n");
+    spacing(20);
     scanf("%d",&decizie);
 
 modificare_viteza(player,decizie);
