@@ -197,7 +197,7 @@ void hall_of_fame(){
 
     struct player jucator[5];
     struct player temp,test;
-    int i,j,ocupat=0; //cate elemente sunt in vectorul de jucatori la un anumit pas
+    int i,j,final=0,ocupat=0; //cate elemente sunt in vectorul de jucatori la un anumit pas
 
     FILE *f;
     f=fopen("jucatori.in","r");
@@ -206,7 +206,7 @@ void hall_of_fame(){
         fscanf(f,"%s %d",test.nume,&test.nr_pasi);
         if(feof(f)) break;
         else{
-
+            if(ocupat==4) final=1;
             //printf("\n");spacing(20);printf("%s %d",test.nume,test.nr_pasi);
             j=ocupat;
 
@@ -227,7 +227,7 @@ void hall_of_fame(){
 
         printf("\n");
 
-         if(ocupat<=4) ocupat--;
+         if(final==0) ocupat--; //daca nu s-a completat ultima pozitie din vector
     for(i=0;i<=ocupat;i++){
        spacing(20);printf("%d. %s %d\n",i+1,jucator[i].nume,jucator[i].nr_pasi);
 
@@ -243,7 +243,7 @@ void afisare_player(struct player *player){
 
 spacing(20);printf("--------- %s ----------\n\n",player -> nume);
 
-spacing(20);printf("Lap: %d/3\n",player -> laps);
+spacing(20);printf("Lap: %d/2\n",player -> laps);
 spacing(20);printf("Te afli pe pozitia %d la %d pozitii de urmatorul obstacol\n",player -> pozitie,distanta_obstacol(player -> pozitie));
 spacing(20);
 if(distanta_curba(player->pozitie)>0)
@@ -297,7 +297,7 @@ void turn_player(struct player *player,struct pista *pista, char simbol){
         if(player -> hp + 20 >=100) player -> hp = 100;
         else player -> hp += 20;
 
-        if(player -> laps == 4 && !castigator)
+        if(player -> laps == 3 && !castigator)
             if(simbol=='@') castigator=1;
             else castigator=2;
 
@@ -456,10 +456,10 @@ void begin(){
         castigator=0;
         }
 
-while((player1.laps<=3 || player2.laps<=3) && restart==0 && iesire==0){
-       if(player1.laps<=3) turn_player(&player1,&pista1,'@');
+while((player1.laps<=2 || player2.laps<=2) && restart==0 && iesire==0){
+       if(player1.laps<=2) turn_player(&player1,&pista1,'@');
        //daca intri in joc si dai iesire/restart fara conditiile restart==0 si iesire==0 o sa treaca la player2 si mai apoi o sa iasa
-        if(player2.laps<=3 && restart==0 && iesire==0) turn_player(&player2,&pista2,'#');
+        if(player2.laps<=2 && restart==0 && iesire==0) turn_player(&player2,&pista2,'#');
 
 }
 
