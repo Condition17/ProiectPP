@@ -35,6 +35,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="sfarsit.in" />
+		<Unit filename="statistici.in" />
+		<Unit filename="statistici_bottom.in" />
+		<Unit filename="statistici_head.in" />
 		<Extensions>
 			<code_completion />
 			<envvars />
