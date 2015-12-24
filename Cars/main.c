@@ -189,7 +189,7 @@ void sfarsit_joc(){
         spacing(20);
         printf("Optiune invalida\n");}
 
-    } while(optiune[0]!='3');
+    } while(optiune[0]!='1' && optiune[0]!='3');
 
 }
 void hall_of_fame(){
@@ -297,7 +297,7 @@ void turn_player(struct player *player,struct pista *pista, char simbol){
         if(player -> hp + 20 >=100) player -> hp = 100;
         else player -> hp += 20;
 
-        if(player -> laps == 3 && !castigator)
+        if(player -> laps == 2 && !castigator)
             if(simbol=='@') castigator=1;
             else castigator=2;
 
@@ -456,10 +456,12 @@ void begin(){
         castigator=0;
         }
 
-while((player1.laps<=2 || player2.laps<=2) && restart==0 && iesire==0){
-       if(player1.laps<=2) turn_player(&player1,&pista1,'@');
+while((player1.laps<=1 /*|| player2.laps<=1*/) && restart==0 && iesire==0){
+       //if(player1.laps<=1)
+
+       turn_player(&player1,&pista1,'@');
        //daca intri in joc si dai iesire/restart fara conditiile restart==0 si iesire==0 o sa treaca la player2 si mai apoi o sa iasa
-        if(player2.laps<=2 && restart==0 && iesire==0) turn_player(&player2,&pista2,'#');
+       // if(player2.laps<=1 && restart==0 && iesire==0) turn_player(&player2,&pista2,'#');
 
 }
 
